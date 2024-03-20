@@ -338,8 +338,9 @@ def train_moco(config, reporter=None):
 
 
 def main_worker(gpu, ngpus_per_node, config, reporter):
-    print(config)
     config['gpu'] = gpu
+
+    config['logger'].info(config)
 
     # suppress printing if not master
     if config['multiprocessing_distributed'] and config['gpu'] != 0:
@@ -397,10 +398,10 @@ def main_worker(gpu, ngpus_per_node, config, reporter):
 
     # Data loading code
     train_dir = os.path.join(config['data'], 'train')
-    test_dir = os.path.join(config['data'], 'test')
+    val_dir = os.path.join(config['data'], 'val')
 
     # -------------------------------- dataset -------------------------------
-    train_dataset, val_dataset = get_dataset(config, test_dir, train_dir)
+    train_dataset, val_dataset = get_dataset(config, val_dir, train_dir)
 
     # -------------------------------- dataloader -------------------------------
     if config['distributed']:
@@ -427,9 +428,6 @@ def main_worker(gpu, ngpus_per_node, config, reporter):
     best_acc1 = 0
 
     for epoch in range(config['start_epoch'], config['epochs']):
-        print("-" * 10)
-        print(f"epoch {epoch + 1}/{config['epochs']}")
-        print("training")
         last_epoch = epoch == (config['epochs'] - 1)
         if config['distributed']:
             train_sampler.set_epoch(epoch)
@@ -440,12 +438,15 @@ def main_worker(gpu, ngpus_per_node, config, reporter):
 
         # evaluate on validation set
         if (config['validation_interval'] != 0) and (epoch % config['validation_interval'] == 0 or last_epoch):
-            test_nn_acc, test_kmeans_metric, test_standalone_kmeans_metric, (test_embedding, test_labels) = \
+            val_nn_acc, val_kmeans_metric, val_standalone_kmeans_metric, (val_embedding, val_labels) = \
                 validation(model, train_loader, val_loader, config)
+            config['logger'].info(
+                f"iteration {epoch} val_nn_acc: {val_nn_acc:.4f}, val_kmeans_metric: {val_kmeans_metric:.4f}, "
+                f"val_standalone_kmeans_metric: {val_standalone_kmeans_metric:.4f}")
 
             if not config['multiprocessing_distributed'] or config['rank'] % ngpus_per_node == 0:
-                is_best = test_nn_acc > best_acc1
-                best_acc1 = max(test_nn_acc, best_acc1)
+                is_best = val_nn_acc > best_acc1
+                best_acc1 = max(val_nn_acc, best_acc1)
                 save_checkpoint({
                     'epoch': epoch + 1,
                     'arch': config['arch'],
@@ -963,7 +964,6 @@ def train(train_loader, model, criterion, optimizer, epoch, config, labeling_mod
         len(train_loader),
         [batch_time, data_time, total_losses, cell_losses, env_losses],
         prefix="Epoch: [{}]".format(epoch), logger=config['logger'])
-    progress.display(0)
 
     # switch to train mode
     model.train()
@@ -1059,17 +1059,16 @@ def train(train_loader, model, criterion, optimizer, epoch, config, labeling_mod
         batch_time.update(time.time() - end)
         end = time.time()
 
-        if i % 10 == 0:
-        # if i % config['print_freq'] == 0:
+        if i % config['print_freq'] == 0:
             progress.display(i)
 
     return total_losses.avg, cell_losses.avg, env_losses.avg  # todo: collect this from other processes too
 
 
-def validation(model, train_loader, test_loader, config):
+def validation(model, train_loader, val_loader, config):
     correct = 0.
     total = 0
-    test_size = len(test_loader.dataset)
+    test_size = len(val_loader.dataset)
 
     # set in eval mode
     model.eval()
@@ -1078,14 +1077,14 @@ def validation(model, train_loader, test_loader, config):
 
         # switch transform to not augment the dataset
         original_transform = train_loader.dataset.transform
-        train_loader.dataset.transform = test_loader.dataset.transform
+        train_loader.dataset.transform = val_loader.dataset.transform
 
         # switch patch transform to not augment the dataset
         original_patch_transform = train_loader.dataset.patch_transform
-        train_loader.dataset.patch_transform = test_loader.dataset.patch_transform
+        train_loader.dataset.patch_transform = val_loader.dataset.patch_transform
 
-        test_embedding = []
-        test_true_labels = []
+        val_embedding = []
+        val_true_labels = []
 
         # compute train features
         train_features = []
@@ -1125,7 +1124,7 @@ def validation(model, train_loader, test_loader, config):
             nn_classifier.fit(train_features, train_labels)
 
         # prediction test samples
-        for batch_idx, (images, targets, patch, _, _, _, _, extra_feat) in enumerate(test_loader):
+        for batch_idx, (images, targets, patch, _, _, _, _, extra_feat) in enumerate(val_loader):
             if config['gpu'] is not None:
                 images = images.cuda(config['gpu'], non_blocking=True)
                 extra_feat = extra_feat.cuda(config['gpu'], non_blocking=True)
@@ -1136,46 +1135,46 @@ def validation(model, train_loader, test_loader, config):
                                               normalize_embedding=config['normalize_embedding'])
             if config['maskedenv_cat']:
                 features = torch.cat((features, patch_embedding), dim=1)
-            test_embedding.append(features)
-            test_true_labels.append(targets)
+            val_embedding.append(features)
+            val_true_labels.append(targets)
 
         # cat the results
-        test_embedding = torch.cat(test_embedding, dim=0)
-        test_true_labels = torch.cat(test_true_labels, dim=0)
+        val_embedding = torch.cat(val_embedding, dim=0)
+        val_true_labels = torch.cat(val_true_labels, dim=0)
 
         # Gather all the tensors from all GPUs
         if torch.distributed.is_initialized():
-            test_embedding = concat_all_gather(test_embedding.cuda())
-            test_true_labels = concat_all_gather(test_true_labels.cuda())
-        test_embedding = test_embedding.cpu()
-        test_true_labels = test_true_labels.cpu()
+            val_embedding = concat_all_gather(val_embedding.cuda())
+            val_true_labels = concat_all_gather(val_true_labels.cuda())
+        val_embedding = val_embedding.cpu()
+        val_true_labels = val_true_labels.cpu()
 
         if not config['euclidean_nn']:
-            distances = torch.mm(test_embedding, train_features.t())
+            distances = torch.mm(val_embedding, train_features.t())
 
             yd, yi = distances.topk(1, dim=1, largest=True, sorted=True)
-            candidates = train_labels.view(1, -1).expand(test_embedding.size(0), -1)
+            candidates = train_labels.view(1, -1).expand(val_embedding.size(0), -1)
             retrieval = torch.gather(candidates, 1, yi)
 
             retrieval = retrieval.narrow(1, 0, 1).clone().view(-1)
             yd = yd.narrow(1, 0, 1)
         else:
-            retrieval = torch.LongTensor(nn_classifier.predict(test_embedding))
+            retrieval = torch.LongTensor(nn_classifier.predict(val_embedding))
         #            retrieval = torch.LongTensor(nn_classifier.predict(features))
 
-        total += test_true_labels.size(0)
-        correct += retrieval.eq(test_true_labels.data).sum().item()
+        total += val_true_labels.size(0)
+        correct += retrieval.eq(val_true_labels.data).sum().item()
         #        correct += retrieval.eq(targets.data).sum().item()
 
-        test_cluster_prediction = kmeans_classifier.predict(test_embedding)
-        kmeans_metrics = clustering_metrics(test_true_labels.numpy(), test_cluster_prediction)
-        standalone_kmeans = clustering_metrics(test_true_labels.numpy(), kmeans_classifier.fit_predict(test_embedding))
+        val_cluster_prediction = kmeans_classifier.predict(val_embedding)
+        kmeans_metrics = clustering_metrics(val_true_labels.numpy(), val_cluster_prediction)
+        standalone_kmeans = clustering_metrics(val_true_labels.numpy(), kmeans_classifier.fit_predict(val_embedding))
 
         # reset the original transform of the train dataset
         train_loader.dataset.transform = original_transform
         train_loader.dataset.patch_transform = original_patch_transform
 
-    return correct / total, kmeans_metrics, standalone_kmeans, (test_embedding, test_true_labels)
+    return correct / total, kmeans_metrics, standalone_kmeans, (val_embedding, val_true_labels)
 
 
 def save_checkpoint(state, is_best, root, filename='checkpoint.pth.tar'):
