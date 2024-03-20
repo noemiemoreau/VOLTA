@@ -442,9 +442,9 @@ def main_worker(gpu, ngpus_per_node, config, reporter):
         if (config['validation_interval'] != 0) and (epoch % config['validation_interval'] == 0 or last_epoch):
             val_nn_acc, val_kmeans_metric, val_standalone_kmeans_metric, (val_embedding, val_labels) = \
                 validation(model, train_loader, val_loader, config)
-            print(val_nn_acc)
-            print(val_kmeans_metric)
-            print(val_standalone_kmeans_metric)
+            config['logger'].info(val_nn_acc)
+            config['logger'].info(val_kmeans_metric)
+            config['logger'].info(val_standalone_kmeans_metric)
             # config['logger'].info(
             #     f"iteration {epoch} val_nn_acc: {val_nn_acc:.4f}, val_kmeans_metric: {val_kmeans_metric:.4f}, "
             #     f"val_standalone_kmeans_metric: {val_standalone_kmeans_metric:.4f}")
