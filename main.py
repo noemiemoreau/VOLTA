@@ -424,6 +424,9 @@ def main_worker(gpu, ngpus_per_node, config, reporter):
     best_acc1 = 0
 
     for epoch in range(config['start_epoch'], config['epochs']):
+        print("-" * 10)
+        print(f"epoch {epoch + 1}/{config['epochs']}")
+        print("training")
         last_epoch = epoch == (config['epochs'] - 1)
         if config['distributed']:
             train_sampler.set_epoch(epoch)
