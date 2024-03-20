@@ -1050,7 +1050,8 @@ def train(train_loader, model, criterion, optimizer, epoch, config, labeling_mod
         batch_time.update(time.time() - end)
         end = time.time()
 
-        if i % config['print_freq'] == 0:
+        if i % 10 == 0:
+        # if i % config['print_freq'] == 0:
             progress.display(i)
 
     return total_losses.avg, cell_losses.avg, env_losses.avg  # todo: collect this from other processes too
