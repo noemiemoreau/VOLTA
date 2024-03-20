@@ -32,11 +32,11 @@ class TwoCropsTransform:
             if q_mask is not None:
                 q_mask = np.array(q_mask).astype(bool)
             if q_segmentation is not None:
-                q_segmentation = q_segmentation.astype(bool)
+                q_segmentation = np.array(q_segmentation).astype(bool)
             if k_mask is not None:
-                k_mask = k_mask.astype(bool)
+                k_mask = np.array(k_mask).astype(bool)
             if k_segmentation is not None:
-                k_segmentation = k_segmentation.astype(bool)
+                k_segmentation = np.array(k_segmentation).astype(bool)
             q, k = q['image'], k['image']
         return tuple(([q, k], [q_mask, k_mask], [q_segmentation, k_segmentation]))
 
