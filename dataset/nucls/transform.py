@@ -14,9 +14,11 @@ class LabelTransform(object):
             self.label_mapper = {1: 0, 6: 0, 2: 1, 7: 1, 5: 1, 3: 2, 4: 2, 10: 3, 11: 3, 12: 3, 8: 3}
         elif n_classes == 3:
             self.label_mapper = {1: 0, 6: 0, 2: 1, 7: 1, 5: 1, 3: 2, 4: 2}
+        elif n_classes == 7:
+            self.label_mapper = {1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6, 7: 7}
         else:
-            self.label_mapper = lambda x: x
-            # raise ValueError("invalid number of classes, {}".format(n_classes))
+            # self.label_mapper = lambda x: x
+            raise ValueError("invalid number of classes, {}".format(n_classes))
 
     def __call__(self, x):
         return self.label_mapper[x]
