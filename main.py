@@ -1119,7 +1119,7 @@ def validation(model, train_loader, val_loader, config):
         train_labels = train_labels.cpu()
 
         # train classifiers
-        kmeans_classifier = KMeans(n_clusters=config['n_classes'], n_jobs=-1).fit(train_features)
+        kmeans_classifier = KMeans(n_clusters=config['n_classes']).fit(train_features)
         if config['euclidean_nn']:
             nn_classifier = KNeighborsClassifier(n_neighbors=1, n_jobs=-1)
             nn_classifier.fit(train_features, train_labels)
