@@ -336,6 +336,7 @@ def train_moco(config, reporter=None):
 
 
 def main_worker(gpu, ngpus_per_node, config, reporter):
+    print(config)
     config['gpu'] = gpu
 
     # suppress printing if not master
