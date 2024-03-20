@@ -957,6 +957,7 @@ def train(train_loader, model, criterion, optimizer, epoch, config, labeling_mod
         len(train_loader),
         [batch_time, data_time, total_losses, cell_losses, env_losses],
         prefix="Epoch: [{}]".format(epoch), logger=logging.getLogger(__name__))
+    progress.display(0)
 
     # switch to train mode
     model.train()
