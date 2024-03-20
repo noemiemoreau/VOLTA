@@ -14,7 +14,7 @@ from multiprocessing import Manager
 
 import albumentations
 import cv2
-import git
+# import git
 import numpy as np
 import torch
 import torch.backends.cudnn as cudnn
