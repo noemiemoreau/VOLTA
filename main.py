@@ -3,6 +3,7 @@
 import argparse
 import builtins
 import datetime
+import logging
 import math
 import os
 import pprint
@@ -955,7 +956,7 @@ def train(train_loader, model, criterion, optimizer, epoch, config, labeling_mod
     progress = ProgressMeter(
         len(train_loader),
         [batch_time, data_time, total_losses, cell_losses, env_losses],
-        prefix="Epoch: [{}]".format(epoch), logger=None)
+        prefix="Epoch: [{}]".format(epoch), logger=logging.getLogger(__name__))
 
     # switch to train mode
     model.train()
