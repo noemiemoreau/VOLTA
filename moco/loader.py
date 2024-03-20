@@ -30,7 +30,7 @@ class TwoCropsTransform:
                 q_mask, q_segmentation = None, None
                 k_mask, k_segmentation = None, None
             if q_mask is not None:
-                q_mask = q_mask.astype(bool)
+                q_mask = np.array(q_mask).astype(bool)
             if q_segmentation is not None:
                 q_segmentation = q_segmentation.astype(bool)
             if k_mask is not None:
