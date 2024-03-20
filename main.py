@@ -64,6 +64,7 @@ from loss.softmax import MaskedCrossEntropyLoss
 from misc.loss import focal_loss, LabelSmoothing
 from misc.metrics import AverageMeter, ProgressMeter, clustering_metrics
 from misc.optimizer import build_optimizer
+from misc.logger import setup_logger
 
 try:
     import tensorflow as tf
@@ -312,6 +313,7 @@ def train_moco(config, reporter=None):
                                               "%Y%m%d-%H%M%S")))
     if not os.path.exists(config['save_dir']):
         os.makedirs(config['save_dir'], exist_ok=True)
+    config['logger'] = setup_logger(__name__, -1, save_dir=config['save_dir'])
 
     config['lr'] = config['lr'] * config['batch_size'] / 256
 
@@ -960,7 +962,7 @@ def train(train_loader, model, criterion, optimizer, epoch, config, labeling_mod
     progress = ProgressMeter(
         len(train_loader),
         [batch_time, data_time, total_losses, cell_losses, env_losses],
-        prefix="Epoch: [{}]".format(epoch), logger=logging.getLogger(__name__))
+        prefix="Epoch: [{}]".format(epoch), logger=config['logger'])
     progress.display(0)
 
     # switch to train mode
