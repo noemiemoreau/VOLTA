@@ -241,7 +241,7 @@ class NuCLSDataset(Dataset):
             patch = self.patch_transform(image=np.array(patch), masks=np.array(masks))
             if isinstance(patch, dict):  # return output of the albumentation transform
                 mask, segmentation = patch['masks']
-                mask, segmentation = mask.astype(bool), segmentation.astype(bool)
+                mask, segmentation = np.array(mask).astype(bool), np.array(segmentation).astype(bool)
                 patch = patch['image']
             elif isinstance(patch, tuple):  # for when two crop augmentation is used
                 patch, mask, segmentation = patch

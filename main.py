@@ -424,6 +424,7 @@ def main_worker(gpu, ngpus_per_node, config, reporter):
                             np.array(train_loader.dataset.targets))
 
     # -------------------------------- training -------------------------------
+    config['logger'].info("-------------------------------- training -------------------------------")
     train_start = time.time()
     best_acc1 = 0
 
