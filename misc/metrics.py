@@ -121,7 +121,9 @@ def _cluster_search_best_assignment(true_labels, clustering_labels, non_existing
     internal_to_true_label_map = {v: k for k, v in true_label_to_internal_map.items()}
     true_labels, _ = remap_label_list(true_labels, internal_to_true_label_map)
     clustering_labels, _ = remap_label_list(clustering_labels, internal_to_true_label_map)
-
+    print(internal_to_true_label_map)
+    print(cluster_label_to_true_label_internal_map)
+    print(cluster_label_to_internal_map)
     cluster_label_final_map = {k: internal_to_true_label_map[cluster_label_to_true_label_internal_map[v]]
                                for k, v in cluster_label_to_internal_map.items()}
 
