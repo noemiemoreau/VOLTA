@@ -399,7 +399,7 @@ def main_worker(gpu, ngpus_per_node, config, reporter):
     # Data loading code
     train_dir = os.path.join(config['data'], 'train')
     #todo change this
-    val_dir = os.path.join(config['data'], 'train')
+    val_dir = os.path.join(config['data'], 'val')
 
     # -------------------------------- dataset -------------------------------
     train_dataset, val_dataset = get_dataset(config, val_dir, train_dir)
