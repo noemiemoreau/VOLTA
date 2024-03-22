@@ -429,13 +429,17 @@ def main_worker(gpu, ngpus_per_node, config, reporter):
     val_nn_acc, val_kmeans_metric, val_standalone_kmeans_metric, (val_embedding, val_labels) = \
         test(model, train_loader, test_loader, config)
 
-    reducer = umap.UMAP(n_components=3)
+    config['logger'].info(val_nn_acc)
+    config['logger'].info(val_kmeans_metric)
+    config['logger'].info(val_standalone_kmeans_metric)
+
+    reducer = umap.UMAP(n_components=2)
     u = reducer.fit_transform(val_embedding)
 
     plt.scatter(u[:, 0], u[:, 1], c=val_labels, cmap="Spectral")
     plt.colorbar(boundaries=np.arange(8) - 0.5).set_ticks(np.arange(7))
     plt.title('UMAP embedding of random colours')
-    plt.savefig(config['save_dir']+"umap.png")
+    plt.savefig(config['save_dir']+"/umap.png")
 
 
     return val_nn_acc, val_kmeans_metric, val_standalone_kmeans_metric
