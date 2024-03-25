@@ -27,6 +27,7 @@ import torch.utils.data
 import torch.utils.data.distributed
 import torchvision
 from albumentations.pytorch import ToTensorV2
+from PIL import Image
 
 import datetime
 
@@ -977,6 +978,10 @@ def train(train_loader, model, criterion, optimizer, epoch, config, labeling_mod
     for i, (images, _, patch, slide_id, coordinates, mask, segmentation, extra_feat) in enumerate(train_loader):
         # measure data loading time
         # print(i)
+        print(images.shape)
+        raise Exception("stop code")
+
+
         data_time.update(time.time() - end)
 
         if mask is not None:  # set masked values to zero
