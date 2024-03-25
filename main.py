@@ -978,7 +978,8 @@ def train(train_loader, model, criterion, optimizer, epoch, config, labeling_mod
     for i, (images, _, patch, slide_id, coordinates, mask, segmentation, extra_feat) in enumerate(train_loader):
         # measure data loading time
         # print(i)
-        print(images.shape)
+        print(len(images))
+        print(images[0].shape)
         raise Exception("stop code")
 
 
