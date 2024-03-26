@@ -54,6 +54,7 @@ class MaskedEnvMoCo(nn.Module):
         if mlp:  # hack: brute-force replacement #
             # replace the fully connected layer with identity
             dim_mlp = self.encoder_q.fc.in_features
+            print(dim_mlp, mlp + [dim])
             self.encoder_q.fc = nn.Identity()
             self.encoder_k.fc = nn.Identity()
             self.q_projection_head = projection_head_generator(dim_mlp, mlp + [dim], normalization)
@@ -61,6 +62,7 @@ class MaskedEnvMoCo(nn.Module):
 
         self.q_prediction_head = None
         if prediction_head:
+            print(dim, prediction_head)
             self.q_prediction_head = nn.Sequential(
                 normalization(nn.Linear(dim, prediction_head)),
                 nn.BatchNorm1d(prediction_head),
