@@ -11,7 +11,6 @@ def projection_head_generator(in_features, layers_size, normalization):
     modules = []
     last_dim = in_features
     for size in layers_size[:-1]:
-        print(last_dim, size)
         modules.extend([
             normalization(nn.Linear(last_dim, size)),
             nn.BatchNorm1d(size),
@@ -19,6 +18,7 @@ def projection_head_generator(in_features, layers_size, normalization):
         ])
         last_dim = size
     modules.append(normalization(nn.Linear(layers_size[-2], layers_size[-1])))
+    print(modules)
     return nn.Sequential(*modules)
 
 
