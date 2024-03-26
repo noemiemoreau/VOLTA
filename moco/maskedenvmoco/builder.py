@@ -97,6 +97,10 @@ class MaskedEnvMoCo(nn.Module):
             normalization(nn.Linear(prediction_head, dim)),
         )
 
+        print(self.env_projection_head)
+        print(self.q_env_projection_head)
+        print(self.q_env_prediction_head)
+
         if self.queue_size != 0:
             self.register_buffer("queue", torch.randn(dim, self.queue_size))
             self.queue = nn.functional.normalize(self.queue, dim=0)
