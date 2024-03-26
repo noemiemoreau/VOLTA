@@ -18,7 +18,6 @@ def projection_head_generator(in_features, layers_size, normalization):
         ])
         last_dim = size
     modules.append(normalization(nn.Linear(layers_size[-2], layers_size[-1])))
-    print(modules)
     return nn.Sequential(*modules)
 
 
@@ -63,13 +62,15 @@ class MaskedEnvMoCo(nn.Module):
 
         self.q_prediction_head = None
         if prediction_head:
-            print(dim, prediction_head)
             self.q_prediction_head = nn.Sequential(
                 normalization(nn.Linear(dim, prediction_head)),
                 nn.BatchNorm1d(prediction_head),
                 nn.ReLU(),
                 normalization(nn.Linear(prediction_head, dim)),
             )
+
+        print(self.q_projection_head)
+        print(self.q_prediction_head)
 
         for param_q, param_k in zip(self.encoder_q.parameters(), self.encoder_k.parameters()):
             param_k.data.copy_(param_q.data)  # initialize
