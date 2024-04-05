@@ -292,6 +292,7 @@ def train_moco(config, reporter=None):
                                       '''id_{}_mlp_{}_dim_{}_time_{}'''.format(
                                           config['job_id'],
                                           '_'.join([str(x) for x in config['mlp']]),
+                                          config['moco_dim'],
                                           exec_time.strftime(
                                               "%Y%m%d-%H%M%S")))
     if not os.path.exists(config['save_dir']):
