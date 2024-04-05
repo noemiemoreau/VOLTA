@@ -287,29 +287,10 @@ def train_moco(config, reporter=None):
         config['save_dir'] = os.path.join(config['save_dir'],
                                           'pretrained_from_{}'.format(config['pretrained'].split('/')[-1]))
     config['save_dir'] = os.path.join(config['save_dir'],
-                                      '''id_{}_mlp_{}_dim_{}_lr_{}_bs_{}_apex_{}_optim_{}_mlpem_{}_specnorm_{}_focgam_{}_queuesize_{}_co2_{}_{}_emedding_{}_{}_moco_{}_ps_{}_env_{}_mask_{}_{}_mskcell_{}_catmskenv_{}_time_{}'''.format(
+                                      '''id_{}_mlp_{}_dim_{}_time_{}'''.format(
                                           config['job_id'],
                                           '_'.join([str(x) for x in config['mlp']]),
                                           config['moco_dim'],
-                                          config['lr'],
-                                          config['batch_size'],
-                                          config['apex'],
-                                          config['optim'],
-                                          config['mlp_embedding'],
-                                          config['spectral_norm'],
-                                          config['focal_gamma'],
-                                          config['queue_size'],
-                                          config['co2_weight'],
-                                          config['co2_t'],
-                                          config['embedding_size'],
-                                          config['commitment_cost'],
-                                          config['moco_type'],
-                                          config['patch_size'],
-                                          config['env_arch'],
-                                          config['mask_ratio'],
-                                          config['env_coef'],
-                                          config['mask_cells'],
-                                          config['maskedenv_cat'],
                                           exec_time.strftime(
                                               "%Y%m%d-%H%M%S")))
     if not os.path.exists(config['save_dir']):
@@ -398,9 +379,9 @@ def main_worker(gpu, ngpus_per_node, config, reporter):
     cudnn.benchmark = True
 
     # Data loading code
-    train_dir = os.path.join(config['data'], 'train')
+    train_dir = os.path.join(config['data'], 'train_cells')
     #todo change this
-    val_dir = os.path.join(config['data'], 'val')
+    val_dir = os.path.join(config['data'], 'val_cells')
 
     # -------------------------------- dataset -------------------------------
     train_dataset, val_dataset = get_dataset(config, val_dir, train_dir)
