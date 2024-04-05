@@ -52,6 +52,8 @@ from dataset.mcic import transform as mcic_dataset
 from dataset.mcic.dataset import MCICDataset
 from dataset.nucls import transform as nucls_dataset
 from dataset.nucls.dataset import NuCLSDataset
+from dataset.kidney import transform as kidney_dataset
+from dataset.kidney.dataset import KidneyDataset
 from dataset.pannuke import transform as pannuke_dataset
 from dataset.pannuke.dataset import PanNukeDataset
 from dataset.lizard import transform as lizard_dataset
@@ -597,6 +599,47 @@ def get_dataset(config: dict, test_dir: str, train_dir: str):
         test_dataset = NuCLSDataset(test_dir,
                                     transform=albumentations.Compose(test_transforms),
                                     target_transform=nucls_dataset.LabelTransform(n_classes=config['n_classes']),
+                                    patch_transform=albumentations.Compose(patch_test_augmentation),
+                                    patch_size=config['patch_size'],
+                                    mask_ratio=config['mask_ratio'],
+                                    hovernet_enable=False,
+                                    valid_labels=config['valid_labels'],
+                                    cache_patch=not config['disable_cache'],
+                                    shared_dictionaries=test_shared_dictionaries)
+    elif config['dataset'] == 'kidney':
+
+        # add image normalization to train and test transformations
+        normalization = [
+            nucls_dataset.get_cell_normalization(),
+            ToTensorV2(transpose_mask=True)
+        ]
+        image_augmentation.extend(normalization)
+        test_transforms.extend(normalization)
+
+        # add patch normalization to train and test transformations
+        patch_normalization = [
+            nucls_dataset.get_patch_normalization(config['patch_size']),
+            ToTensorV2(transpose_mask=True)
+        ]
+        patch_train_augmentation.extend(patch_normalization)
+        patch_test_augmentation.extend(patch_normalization)
+
+        train_dataset = KidneyDataset(train_dir,
+                                     transform=moco.loader.TwoCropsTransform(
+                                         *compose_augmentations(image_augmentation, config['multi_crop'])),
+                                     target_transform=kidney_dataset.LabelTransform(n_classes=config['n_classes']),
+                                     patch_transform=moco.loader.TwoCropsTransform(
+                                         *compose_augmentations(patch_train_augmentation, config['multi_crop'])),
+                                     patch_size=config['patch_size'],
+                                     mask_ratio=config['mask_ratio'],
+                                     hovernet_enable=config['labeling_module'] == 'hovernet',
+                                     dataset_size=config['train_size'],
+                                     valid_labels=config['valid_labels'],
+                                     cache_patch=not config['disable_cache'],
+                                     shared_dictionaries=train_shared_dictionaries)
+        test_dataset = KidneyDataset(test_dir,
+                                    transform=albumentations.Compose(test_transforms),
+                                    target_transform=kidney_dataset.LabelTransform(n_classes=config['n_classes']),
                                     patch_transform=albumentations.Compose(patch_test_augmentation),
                                     patch_size=config['patch_size'],
                                     mask_ratio=config['mask_ratio'],
