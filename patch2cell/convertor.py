@@ -104,7 +104,7 @@ def convert_patch_to_cells(in_img_path: str or np.ndarray, in_mask_path: str or 
 
         # check for none
         if cell is None:
-            print(f'cell is empty, idx: {i}')
+            # print(f'cell is empty, idx: {i}')
             continue
         
         
@@ -128,7 +128,8 @@ def convert_patch_to_cells(in_img_path: str or np.ndarray, in_mask_path: str or 
             continue
 
         # get cell center
-        cell_center = '{}, {}'.format((x_min + x_max) / 2, (y_min + y_max) / 2)
+        cell_center = (x_min + x_max) / 2, (y_min + y_max) / 2
+        cell_center_str = '{}, {}'.format((x_min + x_max) / 2, (y_min + y_max) / 2)
 
         # get cell label
         if type_mask is not None:
@@ -154,10 +155,13 @@ def convert_patch_to_cells(in_img_path: str or np.ndarray, in_mask_path: str or 
         width_offset = scale * width
 
         # crop cell image
-        y_min_map = int(max(y_min - height_offset, 0))
-        y_max_map = int(min(y_max + height_offset, img.height))
-        x_min_map = int(max(x_min - width_offset, 0))
-        x_max_map = int(min(x_max + width_offset, img.width))
+        y_min_map = int(max(cell_center[1] - height_offset, 0))
+        y_max_map = int(min(cell_center[1] + height_offset, img.height))
+        x_min_map = int(max(cell_center[0] - width_offset, 0))
+        x_max_map = int(min(cell_center[0] + width_offset, img.width))
+
+        if y_min_map == 0 or y_max_map == img.height or x_min_map == 0 or x_max_map == img.width:
+            continue
 
         cell_img = img.crop((x_min_map, y_min_map, x_max_map, y_max_map))
 
@@ -171,7 +175,7 @@ def convert_patch_to_cells(in_img_path: str or np.ndarray, in_mask_path: str or 
 
         # save cell location
         with open(os.path.join(out_loc_path, cell_name_generator(cell_number)) + '.txt', 'w') as f:
-            f.write('%s' % cell_center)
+            f.write('%s' % cell_center_str)
 
         # save cell segmentation map
         if type_mask is not None:
@@ -282,31 +286,42 @@ def bool_flag(s):
 
 
 def main():
-    parser = argparse.ArgumentParser(description='NuCLS Convertor Arguments')
-    parser.add_argument('--workers', type=int, default=1, help='number of workers to be used')
-    parser.add_argument('--source', type=str, required=True, help='path to the root of source data')
-    parser.add_argument('--destination', type=str, required=True, help='path to the root of destination data')
-    parser.add_argument('--scale', type=int, default=1, help='scale factor to be used for cell separation')
-    parser.add_argument('--dataset', type=str, default='nucls', help='dataset type: nucls, pannuke, lizard')
-    parser.add_argument('--count_sanity_check', type=bool_flag, default=False, help='sanity check for cell count')
-    parser.add_argument('--n_sample', type=int, default=None, help='number of cells to be sampled form each patch')
-    args = parser.parse_args()
+    # parser = argparse.ArgumentParser(description='NuCLS Convertor Arguments')
+    # parser.add_argument('--workers', type=int, default=1, help='number of workers to be used')
+    # parser.add_argument('--source', type=str, required=True, help='path to the root of source data')
+    # parser.add_argument('--destination', type=str, required=True, help='path to the root of destination data')
+    # parser.add_argument('--scale', type=int, default=1, help='scale factor to be used for cell separation')
+    # parser.add_argument('--dataset', type=str, default='nucls', help='dataset type: nucls, pannuke, lizard')
+    # parser.add_argument('--count_sanity_check', type=bool_flag, default=False, help='sanity check for cell count')
+    # parser.add_argument('--n_sample', type=int, default=None, help='number of cells to be sampled form each patch')
+    # args = parser.parse_args()
+    #
+    # # load the dataset template
+    # if args.dataset.lower() == 'nucls':
+    #     dataset = Nucls()
+    # elif args.dataset.lower() == 'regular':
+    #     dataset = Regular()
+    # elif args.dataset.lower() == 'pannuke':
+    #     dataset = PanNuke()
+    # elif args.dataset.lower() == 'lizard':
+    #     dataset = Lizard()
+    # elif args.dataset.lower() == 'hovernet':
+    #     dataset = Hovernet()
+    # else:
+    #     raise ValueError('invalid dataset type')
 
-    # load the dataset template
-    if args.dataset.lower() == 'nucls':
-        dataset = Nucls()
-    elif args.dataset.lower() == 'regular':
-        dataset = Regular()
-    elif args.dataset.lower() == 'pannuke':
-        dataset = PanNuke()
-    elif args.dataset.lower() == 'lizard':
-        dataset = Lizard()
-    elif args.dataset.lower() == 'hovernet':
-        dataset = Hovernet()
-    else:
-        raise ValueError('invalid dataset type')
+    source = "/Users/nmoreau/Documents/Data/Kidney/new_organization/processed_data/volta/NuCLS/val/"
+    destination = "/Users/nmoreau/Documents/Data/Kidney/new_organization/processed_data/volta/NuCLS/val_cells/"
+    dataset = Nucls()
+    scale = 1
+    workers = 1
+    count_sanity_check = False
+    n_sample = None
 
-    convert_dataset(args.source, args.destination, dataset, args.scale, args.workers, count_sanity_check=args.count_sanity_check, n_sample=args.n_sample)
+    # convert_dataset(args.source, args.destination, dataset, args.scale, args.workers, count_sanity_check=args.count_sanity_check, n_sample=args.n_sample)
+
+    convert_dataset(source, destination, dataset, scale, workers,
+                    count_sanity_check=count_sanity_check, n_sample=n_sample)
 
 
 if __name__ == '__main__':
