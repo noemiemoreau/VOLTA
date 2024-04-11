@@ -424,6 +424,16 @@ def main_worker(gpu, ngpus_per_node, config, reporter):
     plt.title('UMAP embedding of random colours')
     plt.savefig(config['save_dir']+"/umap.png")
 
+    reducer = umap.UMAP(n_components=3)
+    u = reducer.fit_transform(val_embedding)
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+    ax.scatter(u[:, 0], u[:, 1], u[:, 2], c=val_labels, cmap="Spectral")
+    plt.colorbar(boundaries=np.arange(config['n_classes'] + 1) - 0.5).set_ticks(np.arange(config['n_classes']))
+    plt.title('UMAP embedding of random colours')
+    plt.savefig(config['save_dir'] + "/umap2.png")
+
 
     return val_nn_acc, val_kmeans_metric, val_standalone_kmeans_metric
 
