@@ -430,7 +430,7 @@ def main_worker(gpu, ngpus_per_node, config, reporter):
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
     ax.scatter(u[:, 0], u[:, 1], u[:, 2], c=val_labels, cmap="Spectral")
-    plt.colorbar(boundaries=np.arange(config['n_classes'] + 1) - 0.5).set_ticks(np.arange(config['n_classes']))
+    # plt.colorbar(boundaries=np.arange(config['n_classes'] + 1) - 0.5).set_ticks(np.arange(config['n_classes']))
     plt.title('UMAP embedding of random colours')
     plt.savefig(config['save_dir'] + "/umap2.png")
 
