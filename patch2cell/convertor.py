@@ -23,7 +23,7 @@ from multiprocessing import Pool
 def convert_patch_to_cells(in_img_path: str or np.ndarray, in_mask_path: str or np.ndarray, ihc_path: str, out_img_path: str, out_label_path: str,
                            out_loc_path: str, out_map_path: str, overlay_path: str, out_patch_path: str,
                            out_segmentation_path: str, scale_factor: int, dataset, translator: dict = None, 
-                           count_sanity_check: bool = False, n_sample=None):
+                           count_sanity_check: bool = False, n_sample=None, min_size=15):
     # Check for name consistency
     if isinstance(in_img_path, str) and isinstance(in_mask_path, str):
         assert os.path.splitext(os.path.split(in_img_path)[1])[0] == os.path.splitext(os.path.split(in_mask_path)[1])[0]
@@ -148,6 +148,10 @@ def convert_patch_to_cells(in_img_path: str or np.ndarray, in_mask_path: str or 
         width = x_max - x_min
         # make the crop square
         height = width = max(height, width)
+
+        if height <= min_size:
+            print("ignore too small")
+            continue
 
         scale = scale_factor / 2
 
@@ -310,9 +314,11 @@ def main():
     # else:
     #     raise ValueError('invalid dataset type')
 
-    source = "/Users/nmoreau/Documents/Data/Kidney/new_organization/processed_data/volta/NuCLS/val/"
-    destination = "/Users/nmoreau/Documents/Data/Kidney/new_organization/processed_data/volta/NuCLS/val_cells/"
-    dataset = Nucls()
+    source = "/Users/nmoreau/Documents/Data/Kidney/new_organization/processed_data/volta_bis/data/validation/"
+    destination = "/Users/nmoreau/Documents/Data/Kidney/new_organization/processed_data/volta_bis/data/validation_cells/"
+    # source = "/Users/nmoreau/Documents/Data/Kidney/new_organization/processed_data/volta/Pannuke/Fold 1/"
+    # destination = "/Users/nmoreau/Documents/Data/Kidney/new_organization/processed_data/volta/Pannuke/train_cells"
+    dataset = Hovernet()
     scale = 1
     workers = 1
     count_sanity_check = False

@@ -68,9 +68,6 @@ class MaskedEnvMoCo(nn.Module):
                 normalization(nn.Linear(prediction_head, dim)),
             )
 
-        print(self.q_projection_head)
-        print(self.q_prediction_head)
-
         for param_q, param_k in zip(self.encoder_q.parameters(), self.encoder_k.parameters()):
             param_k.data.copy_(param_q.data)  # initialize
             param_k.requires_grad = False  # not update by gradient
@@ -96,10 +93,6 @@ class MaskedEnvMoCo(nn.Module):
             nn.ReLU(),
             normalization(nn.Linear(prediction_head, dim)),
         )
-
-        print(self.env_projection_head)
-        print(self.q_env_projection_head)
-        print(self.q_env_prediction_head)
 
         if self.queue_size != 0:
             self.register_buffer("queue", torch.randn(dim, self.queue_size))
