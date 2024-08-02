@@ -381,7 +381,7 @@ def main_worker(gpu, ngpus_per_node, config, reporter):
     cudnn.benchmark = True
 
     # Data loading code
-    train_dir = os.path.join(config['data'], 'train_cells')
+    train_dir = os.path.join(config['data'], 'training_cells')
     #todo change this
     val_dir = os.path.join(config['data'], 'validation_cells')
 
