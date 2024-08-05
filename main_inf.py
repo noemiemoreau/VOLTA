@@ -1083,7 +1083,7 @@ def test(model, train_loader, test_loader, config):
                 new_test_labels.append(test_true_labels[i_embedding])
 
         val_cluster_prediction = kmeans_classifier.predict(new_test_embedding)
-        kmeans_metrics = clustering_metrics(new_test_labels.numpy(), val_cluster_prediction)
+        kmeans_metrics = clustering_metrics(np.array(new_test_labels), val_cluster_prediction)
         standalone_kmeans = clustering_metrics(np.array(new_test_labels), kmeans_classifier.fit_predict(new_test_embedding))
 
         # reset the original transform of the train dataset
