@@ -426,19 +426,19 @@ def main_worker(gpu, ngpus_per_node, config, reporter):
     config['logger'].info(val_standalone_kmeans_metric)
 
     reducer = umap.UMAP(n_components=2, n_neighbors=100, min_dist=0.8)
-    u = reducer.fit_transform(val_embedding)
+    u = reducer.fit_transform(new_val_embedding)
 
-    plt.scatter(u[:, 0], u[:, 1], c=val_labels, cmap="Spectral")
+    plt.scatter(u[:, 0], u[:, 1], c=new_val_labels, cmap="Spectral")
     plt.colorbar(boundaries=np.arange(config['n_classes']+1) - 0.5).set_ticks(np.arange(config['n_classes']))
     plt.title('UMAP embedding of random colours')
     plt.savefig(config['save_dir']+"/umap.png")
 
     reducer = umap.UMAP(n_components=3, n_neighbors=100, min_dist=0.8)
-    u = reducer.fit_transform(val_embedding)
+    u = reducer.fit_transform(new_val_embedding)
 
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
-    ax.scatter(u[:, 0], u[:, 1], u[:, 2], c=val_labels, cmap="Spectral")
+    ax.scatter(u[:, 0], u[:, 1], u[:, 2], c=new_val_labels, cmap="Spectral")
     # plt.colorbar(boundaries=np.arange(config['n_classes'] + 1) - 0.5).set_ticks(np.arange(config['n_classes']))
     plt.title('UMAP embedding of random colours')
     plt.savefig(config['save_dir'] + "/umap2.png")
