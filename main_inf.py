@@ -387,9 +387,9 @@ def main_worker(gpu, ngpus_per_node, config, reporter):
         model.load_state_dict(checkpoint['state_dict'])
 
     # Data loading code
-    train_dir = os.path.join(config['data'], 'train_cells')
+    train_dir = os.path.join(config['data'], 'training_cells')
     #todo change this
-    test_dir = os.path.join(config['data'], 'val_cells')
+    test_dir = os.path.join(config['data'], 'test_cells')
 
     # -------------------------------- dataset -------------------------------
     train_dataset, test_dataset = get_dataset(config, test_dir, train_dir)
