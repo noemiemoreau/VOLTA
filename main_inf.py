@@ -416,7 +416,7 @@ def main_worker(gpu, ngpus_per_node, config, reporter):
     new_val_labels = []
 
     for i_embedding in range(0, len(val_embedding)):
-        rand = random.randrange(2)
+        rand = random.randrange(10)
         if val_labels[i_embedding] != 4 and rand == 0:
             new_val_embedding.append(val_embedding[i_embedding])
             new_val_labels.append(val_labels[i_embedding])
