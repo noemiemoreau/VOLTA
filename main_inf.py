@@ -412,6 +412,15 @@ def main_worker(gpu, ngpus_per_node, config, reporter):
     val_nn_acc, val_kmeans_metric, val_standalone_kmeans_metric, (val_embedding, val_labels) = \
         test(model, train_loader, test_loader, config)
 
+    new_val_embedding = []
+    new_val_labels = []
+
+    for i_embedding in range(0, len(val_embedding)):
+        rand = random.randrange(2)
+        if val_labels[i_embedding] != 4 and rand == 0:
+            new_val_embedding.append(val_embedding[i_embedding])
+            new_val_labels.append(val_labels[i_embedding])
+
     config['logger'].info(val_nn_acc)
     config['logger'].info(val_kmeans_metric)
     config['logger'].info(val_standalone_kmeans_metric)
