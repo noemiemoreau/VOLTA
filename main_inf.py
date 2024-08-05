@@ -389,7 +389,7 @@ def main_worker(gpu, ngpus_per_node, config, reporter):
     # Data loading code
     train_dir = os.path.join(config['data'], 'training_cells')
     #todo change this
-    test_dir = os.path.join(config['data'], 'validation_cells')
+    test_dir = os.path.join(config['data'], 'test_cells')
 
     # -------------------------------- dataset -------------------------------
     train_dataset, test_dataset = get_dataset(config, test_dir, train_dir)
@@ -1074,9 +1074,17 @@ def test(model, train_loader, test_loader, config):
         correct += retrieval.eq(test_true_labels.data).sum().item()
         #        correct += retrieval.eq(targets.data).sum().item()
 
-        val_cluster_prediction = kmeans_classifier.predict(test_embedding)
-        kmeans_metrics = clustering_metrics(test_true_labels.numpy(), val_cluster_prediction)
-        standalone_kmeans = clustering_metrics(test_true_labels.numpy(), kmeans_classifier.fit_predict(test_embedding))
+        new_test_embedding = []
+        new_test_labels = []
+        for i_embedding in range(0, len(test_embedding)):
+            # rand = random.randrange(2)
+            if test_true_labels[i_embedding] != 4:
+                new_test_embedding.append(test_embedding[i_embedding])
+                new_test_labels.append(test_true_labels[i_embedding])
+
+        val_cluster_prediction = kmeans_classifier.predict(new_test_embedding)
+        kmeans_metrics = clustering_metrics(new_test_labels.numpy(), val_cluster_prediction)
+        standalone_kmeans = clustering_metrics(new_test_labels.numpy(), kmeans_classifier.fit_predict(new_test_embedding))
 
         # reset the original transform of the train dataset
         train_loader.dataset.transform = original_transform
