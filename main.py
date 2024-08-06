@@ -441,7 +441,7 @@ def main_worker(gpu, ngpus_per_node, config, reporter):
                     'arch': config['arch'],
                     'state_dict': model.state_dict(),
                     'optimizer': optimizer.state_dict(),
-                }, is_best=is_best, root=config['save_dir'])
+                }, is_best=is_best, root=config['save_dir'], filename="Checkpoint_" + str(epoch) + ".pth.tar")
 
         if reporter is not None:
             reporter(best_acc1, train_loss)
