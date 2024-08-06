@@ -389,7 +389,7 @@ def main_worker(gpu, ngpus_per_node, config, reporter):
     # Data loading code
     train_dir = os.path.join(config['data'], 'training_cells')
     #todo change this
-    test_dir = os.path.join(config['data'], 'validation_cells')
+    test_dir = os.path.join(config['data'], 'test_cells')
 
     # -------------------------------- dataset -------------------------------
     train_dataset, test_dataset = get_dataset(config, test_dir, train_dir)
@@ -1085,7 +1085,7 @@ def test(model, train_loader, test_loader, config):
         val_cluster_prediction = kmeans_classifier.predict(test_embedding)
         kmeans_metrics = clustering_metrics(test_true_labels.numpy(), val_cluster_prediction)
         # kmeans_classifier = KMeans(n_clusters=(config['n_classes']-1)).fit(new_test_embedding)
-        standalone_kmeans = clustering_metrics(test_true_labels.numpy(), kmeans_classifier.predict(test_embedding))
+        standalone_kmeans = clustering_metrics(test_true_labels.numpy(), kmeans_classifier.fit_predict(test_embedding))
 
         # reset the original transform of the train dataset
         train_loader.dataset.transform = original_transform
