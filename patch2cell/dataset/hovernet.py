@@ -5,8 +5,8 @@ import numpy as np
 class Hovernet:
 
     def __init__(self):
-        self.input_image_dir_name = "Images_patches"
-        self.input_label_dir_name = "Labels_patches"
+        self.input_image_dir_name = "images_patches"
+        self.input_label_dir_name = "labels_patches"
         self.input_ihc_dir_name = None
         self.skip_labels = [6, 7]
         self.labeling_type = 'mask'
