@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import json
 
 if __name__ == "__main__":
-    split_json_path = "explainable_features/splits.json"
+    split_json_path = "patch2cell/splits.json"
 
     # glom_images_dir_path = "/Users/nmoreau/Downloads/glom_extracted/glom_roi_images/"
     # glom_labels_dir_path = "/Users/nmoreau/Downloads/glom_extracted/glom_roi_labels/"

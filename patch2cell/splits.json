@@ -1,0 +1,6 @@
+{
+"split_1": ["A hNiere S1 PAS", "A hNiere S4 PAS", "Biopsie 11", "Biopsie 12", "Biopsie 23", "Biopsie 24", "Biopsie 25", "Biopsie 26", "Biopsie 27", "I hNiere S1 PAS"],
+"split_2": ["Biopsie 15", "Biopsie 16", "Biopsie 19", "Biopsie 20", "Biopsie 21", "Biopsie 22", "Biopsie 28", "Biopsie 29", "Biopsie 30", "C hNiere S1 PAS", "H hNiere S1 PAS", "human kidney Bl 1 PAS", "J hNiere S1 PAS"],
+"split_3": ["adpkd kidney PAS", "Biopsie 13", "Biopsie 14", "Biopsie 17", "Biopsie 18", "Biopsie 1", "Biopsie 2", "Biopsie 5", "Biopsie 6", "Biopsie 7", "Biopsie 8", "K hNiere S1 PAS", "Transplantniere Bl 4 PAS"],
+"test": ["Biopsie 10", "Biopsie 3", "Biopsie 4", "Biopsie 9", "E hNiere S1 PAS"]
+}
