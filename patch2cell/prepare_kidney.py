@@ -9,11 +9,11 @@ Image.MAX_IMAGE_PIXELS = None
 import json
 
 TYPE_NUCLEI_DICT = {
-    1: "Opal_480",
-    2: "Opal_520",
-    3: "Opal_570",
-    4: "Opal_620",
-    5: "Opal_690",
+    1: "Opal_480", #podocytes
+    2: "Opal_520", #PECs
+    3: "Opal_570", #endothelial
+    4: "Opal_620", #mesangials
+    5: "Opal_690", #immune
     6: "Outside",
     7: "Unclassified"
 }
