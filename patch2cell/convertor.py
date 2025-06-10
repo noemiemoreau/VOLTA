@@ -314,8 +314,8 @@ def main():
     # else:
     #     raise ValueError('invalid dataset type')
 
-    source = "/Users/nmoreau/Documents/Data/Kidney/new_organization/processed_data/volta_bis/data_nucleus_300_wo_outside/validation_test/"
-    destination = "/Users/nmoreau/Documents/Data/Kidney/new_organization/processed_data/volta_bis/data_nucleus_300_wo_outside/validation_test_cells/"
+    source = "/scratch/nmoreau/volta/new_kidney_data_300_40x/train/"
+    destination = "/scratch/nmoreau/volta/new_kidney_data_300_40x/train_cells/"
     # source = "/Users/nmoreau/Documents/Data/Kidney/new_organization/processed_data/volta/Pannuke/Fold 1/"
     # destination = "/Users/nmoreau/Documents/Data/Kidney/new_organization/processed_data/volta/Pannuke/train_cells"
     dataset = Hovernet()
