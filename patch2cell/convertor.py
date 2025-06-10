@@ -26,6 +26,7 @@ def convert_patch_to_cells(in_img_path: str or np.ndarray, in_mask_path: str or 
                            count_sanity_check: bool = False, n_sample=None, min_size=15):
     # Check for name consistency
     if isinstance(in_img_path, str) and isinstance(in_mask_path, str):
+        print(os.path.splitext(os.path.split(in_img_path)[1])[0])
         assert os.path.splitext(os.path.split(in_img_path)[1])[0] == os.path.splitext(os.path.split(in_mask_path)[1])[0]
     if ihc_path is not None and isinstance(in_img_path, str) and isinstance(ihc_path, str):
         assert os.path.splitext(os.path.split(in_img_path)[1])[0] == os.path.splitext(os.path.split(ihc_path)[1])[0]
