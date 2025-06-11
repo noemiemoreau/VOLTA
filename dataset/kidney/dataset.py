@@ -237,8 +237,10 @@ class KidneyDataset(Dataset):
             label = self.target_transform(label)
         if self.patch_transform is not None and patch is not None:
             # Note: convert mask to float and numpy because of the albumentation
-            # masks = [mask.float().numpy(), segmentation]
-            masks = [mask, segmentation]
+            masks = [mask.float().numpy(), segmentation]
+            # masks = [mask, segmentation]
+            print(masks)
+            print(segmentation)
             patch = self.patch_transform(image=np.array(patch), masks=np.array(masks))
             if isinstance(patch, dict):  # return output of the albumentation transform
                 mask, segmentation = patch['masks']
