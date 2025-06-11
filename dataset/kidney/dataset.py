@@ -240,7 +240,7 @@ class KidneyDataset(Dataset):
             masks = [mask.float().numpy(), segmentation]
             # masks = [mask, segmentation]
             print(patch)
-            patch = self.patch_transform(image=np.array(patch), masks=np.array(masks))
+            patch = self.patch_transform(image=np.array(patch))
             if isinstance(patch, dict):  # return output of the albumentation transform
                 mask, segmentation = patch['masks']
                 mask, segmentation = np.array(mask).astype(bool), np.array(segmentation).astype(bool)
