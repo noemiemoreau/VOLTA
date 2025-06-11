@@ -4,7 +4,9 @@ import albumentations
 class LabelTransform(object):
 
     def __init__(self, n_classes):
-        if n_classes == 3:
+        if n_classes == 2:
+            self.label_mapper = {1: 0, 2: 0, 3: 0, 4: 0, 5: 1, 6: 1, 7: 1}
+        elif n_classes == 3:
             self.label_mapper = {1: 0, 2: 0, 3: 1, 4: 1, 5: 2, 6: 2, 7: 2}
         elif n_classes == 4:
             self.label_mapper = {1: 0, 2: 1, 3: 2, 4: 3}
