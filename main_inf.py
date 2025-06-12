@@ -418,14 +418,15 @@ def main_worker(gpu, ngpus_per_node, config, reporter):
     for i_embedding in range(0, len(val_embedding)):
         # rand = random.randrange(2)
         rand = 0
-        if val_labels[i_embedding] != 4 and rand == 0:
+        if True:
+        # if val_labels[i_embedding] != 4 and rand == 0:
             new_val_embedding.append(val_embedding[i_embedding])
             new_val_labels.append(val_labels[i_embedding])
 
     config['logger'].info(val_nn_acc)
     config['logger'].info(val_kmeans_metric)
     config['logger'].info(val_standalone_kmeans_metric)
-
+    print(np.array(new_val_embedding).shape)
     reducer = umap.UMAP(n_components=2)
     u = reducer.fit_transform(new_val_embedding)
 
