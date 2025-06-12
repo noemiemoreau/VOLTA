@@ -428,7 +428,9 @@ def main_worker(gpu, ngpus_per_node, config, reporter):
     reducer = umap.UMAP(n_components=2)
     u = reducer.fit_transform(new_val_embedding)
 
-    plt.scatter(u[:, 0], u[:, 1], c=new_val_labels, cmap="Spectral")
+    kmeans_classifier = KMeans(n_clusters=4).fit_predict(val_embedding)
+
+    plt.scatter(u[:, 0], u[:, 1], c=kmeans_classifier, cmap="Spectral")
     plt.colorbar(boundaries=np.arange(config['n_classes']+1) - 0.5).set_ticks(np.arange(config['n_classes']))
     plt.title('UMAP embedding of random colours')
     plt.savefig(config['save_dir']+"/umap.png")
@@ -438,7 +440,7 @@ def main_worker(gpu, ngpus_per_node, config, reporter):
 
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
-    ax.scatter(u[:, 0], u[:, 1], u[:, 2], c=new_val_labels, cmap="Spectral")
+    ax.scatter(u[:, 0], u[:, 1], u[:, 2], c=kmeans_classifier, cmap="Spectral")
     # plt.colorbar(boundaries=np.arange(config['n_classes'] + 1) - 0.5).set_ticks(np.arange(config['n_classes']))
     plt.title('UMAP embedding of random colours')
     plt.savefig(config['save_dir'] + "/umap2.png")
