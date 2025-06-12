@@ -416,19 +416,17 @@ def main_worker(gpu, ngpus_per_node, config, reporter):
     new_val_labels = []
 
     for i_embedding in range(0, len(val_embedding)):
-        # rand = random.randrange(2)
-        rand = 0
-        if True:
-        # if val_labels[i_embedding] != 4 and rand == 0:
+        if val_labels[i_embedding] != 1:
+            print(val_embedding[i_embedding].shape)
             new_val_embedding.append(val_embedding[i_embedding])
             new_val_labels.append(val_labels[i_embedding])
 
     config['logger'].info(val_nn_acc)
     config['logger'].info(val_kmeans_metric)
     config['logger'].info(val_standalone_kmeans_metric)
-    print(val_embedding.shape)
+    print(np.array(new_val_embedding).shape)
     reducer = umap.UMAP(n_components=2)
-    u = reducer.fit_transform(val_embedding)
+    u = reducer.fit_transform(new_val_embedding)
 
     plt.scatter(u[:, 0], u[:, 1], c=new_val_labels, cmap="Spectral")
     plt.colorbar(boundaries=np.arange(config['n_classes']+1) - 0.5).set_ticks(np.arange(config['n_classes']))
