@@ -417,8 +417,7 @@ def main_worker(gpu, ngpus_per_node, config, reporter):
 
     for i_embedding in range(0, len(val_embedding)):
         if val_labels[i_embedding] != 1:
-            print(val_embedding[i_embedding].shape)
-            new_val_embedding.append(val_embedding[i_embedding])
+            new_val_embedding.append(val_embedding[i_embedding].numpy())
             new_val_labels.append(val_labels[i_embedding])
 
     config['logger'].info(val_nn_acc)
