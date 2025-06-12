@@ -416,7 +416,8 @@ def main_worker(gpu, ngpus_per_node, config, reporter):
     new_val_labels = []
 
     for i_embedding in range(0, len(val_embedding)):
-        if val_labels[i_embedding] != 1:
+        if True:
+        # if val_labels[i_embedding] != 4:
             new_val_embedding.append(val_embedding[i_embedding].numpy())
             new_val_labels.append(val_labels[i_embedding])
 
