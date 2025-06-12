@@ -71,9 +71,9 @@ if __name__ == "__main__":
                 inst_map_mask[glom_mask == 0] = 0
                 nb_pixel_cell_inside_glom = np.count_nonzero(inst_map_mask)
                 if nb_pixel_cell_inside_glom > nb_pixel_cell//2:
-                    cell_mask_type_map[cell_mask_inst_map == inst_id] = 1
+                    cell_mask_type_map[cell_mask_inst_map == inst_id] = 1 #glom cells
                 else :
-                    cell_mask_type_map[cell_mask_inst_map == inst_id] = 5
+                    cell_mask_type_map[cell_mask_inst_map == inst_id] = 5 #outside cells
 
             path_number = 0
             if len(split) == 0 or len(split) > 1:
