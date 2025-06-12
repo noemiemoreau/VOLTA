@@ -426,9 +426,9 @@ def main_worker(gpu, ngpus_per_node, config, reporter):
     config['logger'].info(val_nn_acc)
     config['logger'].info(val_kmeans_metric)
     config['logger'].info(val_standalone_kmeans_metric)
-    print(np.array(new_val_embedding).shape)
+    print(val_embedding.shape)
     reducer = umap.UMAP(n_components=2)
-    u = reducer.fit_transform(new_val_embedding)
+    u = reducer.fit_transform(val_embedding)
 
     plt.scatter(u[:, 0], u[:, 1], c=new_val_labels, cmap="Spectral")
     plt.colorbar(boundaries=np.arange(config['n_classes']+1) - 0.5).set_ticks(np.arange(config['n_classes']))
