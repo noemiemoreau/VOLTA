@@ -417,7 +417,7 @@ def main_worker(gpu, ngpus_per_node, config, reporter):
 
     for i_embedding in range(0, len(val_embedding)):
         # if True:
-        if val_labels[i_embedding] != 1:
+        if val_labels[i_embedding] != 4:
             new_val_embedding.append(val_embedding[i_embedding].numpy())
             new_val_labels.append(val_labels[i_embedding])
 
@@ -434,6 +434,11 @@ def main_worker(gpu, ngpus_per_node, config, reporter):
     plt.colorbar(boundaries=np.arange(config['n_classes']+1) - 0.5).set_ticks(np.arange(config['n_classes']))
     plt.title('UMAP embedding of random colours')
     plt.savefig(config['save_dir']+"/umap.png")
+
+    plt.scatter(u[:, 0], u[:, 1], c=new_val_labels, cmap="Spectral")
+    plt.colorbar(boundaries=np.arange(config['n_classes']+1) - 0.5).set_ticks(np.arange(config['n_classes']))
+    plt.title('UMAP embedding of random colours')
+    plt.savefig(config['save_dir']+"/umap_bis.png")
 
     reducer = umap.UMAP(n_components=3)
     u = reducer.fit_transform(new_val_embedding)
